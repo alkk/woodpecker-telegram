@@ -106,7 +106,7 @@ Touches: CLI flags and env handling (`main.go`), tests (`main_test.go`), and the
 
 ### Task 3: Close the plan
 
-- [ ] this plan moved to `docs/plans/completed/`
+- [x] this plan moved to `docs/plans/completed/`
 
 ## Post-Completion
 
