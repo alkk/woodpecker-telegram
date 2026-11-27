@@ -1,9 +1,9 @@
 module github.com/alkk/drone-telegram
 
-go 1.26.10
+go 1.27.4
 
 require (
-	github.com/OvyFlash/telegram-bot-api v0.0.0-20260826195316-83c4eada97a1
+	github.com/OvyFlash/telegram-bot-api v0.0.0-20261109145030-db575b9b8ee0
 	github.com/appleboy/drone-template-lib v1.3.0
 	github.com/joho/godotenv v1.5.1
 	github.com/stretchr/testify v1.12.1
@@ -17,7 +17,7 @@ require (
 	github.com/Masterminds/sprig/v3 v3.3.0 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.7 // indirect
 	github.com/google/uuid v1.6.0 // indirect
-	github.com/huandu/xstrings v1.6.3 // indirect
+	github.com/huandu/xstrings v1.6.6 // indirect
 	github.com/mailgun/raymond/v2 v2.0.48 // indirect
 	github.com/mitchellh/copystructure v1.2.0 // indirect
 	github.com/mitchellh/reflectwalk v1.0.2 // indirect
@@ -26,6 +26,6 @@ require (
 	github.com/sirupsen/logrus v1.10.2 // indirect
 	github.com/spf13/cast v1.10.0 // indirect
 	go.yaml.in/yaml/v3 v3.0.6 // indirect
-	golang.org/x/crypto v0.58.0 // indirect
-	golang.org/x/sys v0.49.0 // indirect
+	golang.org/x/crypto v0.59.0 // indirect
+	golang.org/x/sys v0.50.0 // indirect
 )
