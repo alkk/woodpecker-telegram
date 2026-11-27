@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"html"
+	"io/fs"
 	"log"
 	"maps"
 	"net/http"
@@ -76,6 +77,7 @@ type (
 		MessageThreadID  int
 		Message          string
 		MessageFile      string
+		SkipFile         string
 		TemplateVarsFile string
 		TemplateVars     string
 		Photo            []string
@@ -379,6 +381,16 @@ func parseTo(to []string, authorEmail string, matchEmail bool) []int64 {
 func (p *Plugin) Exec() (err error) {
 	if len(p.Config.Token) == 0 || len(p.Config.To) == 0 {
 		return errors.New("missing telegram token or user list")
+	}
+
+	if p.Config.SkipFile != "" {
+		switch _, err := os.Stat(p.Config.SkipFile); {
+		case err == nil:
+			log.Printf("%s exists, skipping notification", p.Config.SkipFile)
+			return nil
+		case !errors.Is(err, fs.ErrNotExist):
+			return fmt.Errorf("unable to check skip file '%s': %w", p.Config.SkipFile, err)
+		}
 	}
 
 	var message []string

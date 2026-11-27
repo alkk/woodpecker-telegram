@@ -76,6 +76,11 @@ func newApp() *cli.App {
 			EnvVar: "PLUGIN_MESSAGE_FILE,TELEGRAM_MESSAGE_FILE,INPUT_MESSAGE_FILE",
 		},
 		cli.StringFlag{
+			Name:   "skip.file",
+			Usage:  "skip sending when this file exists",
+			EnvVar: "PLUGIN_SKIP_FILE,TELEGRAM_SKIP_FILE,INPUT_SKIP_FILE",
+		},
+		cli.StringFlag{
 			Name:   "template.vars",
 			Usage:  "additional template vars to be used in message, as JSON string",
 			EnvVar: "PLUGIN_TEMPLATE_VARS,TELEGRAM_TEMPLATE_VARS,INPUT_TEMPLATE_VARS",
@@ -350,6 +355,7 @@ func run(c *cli.Context) error {
 			MessageThreadID:  c.Int("message.thread.id"),
 			Message:          c.String("message"),
 			MessageFile:      c.String("message.file"),
+			SkipFile:         c.String("skip.file"),
 			TemplateVars:     c.String("template.vars"),
 			TemplateVarsFile: c.String("template.vars.file"),
 			Photo:            c.StringSlice("photo"),

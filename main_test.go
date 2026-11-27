@@ -2,6 +2,7 @@ package main
 
 import (
 	"os"
+	"path/filepath"
 	"strings"
 	"testing"
 
@@ -112,6 +113,21 @@ func TestNewAppWoodpeckerEnv(t *testing.T) {
 			assert.Equal(t, tt.wantDeployTo, deployTo)
 		})
 	}
+}
+
+// Runs the real Action: if PLUGIN_SKIP_FILE didn't reach Config, Exec would
+// fail on the missing message file instead of skipping.
+func TestNewAppSkipFile(t *testing.T) {
+	clearCIEnv(t)
+	dir := t.TempDir()
+	marker := filepath.Join(dir, "marker")
+	require.NoError(t, os.WriteFile(marker, nil, 0o600))
+	t.Setenv("PLUGIN_TOKEN", "unused")
+	t.Setenv("PLUGIN_TO", "1")
+	t.Setenv("PLUGIN_MESSAGE_FILE", filepath.Join(dir, "missing.txt"))
+	t.Setenv("PLUGIN_SKIP_FILE", marker)
+
+	require.NoError(t, newApp().Run([]string{"woodpecker-telegram"}))
 }
 
 func TestUnsetEmptyEnv(t *testing.T) {

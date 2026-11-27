@@ -18,6 +18,7 @@ Forked from [appleboy/drone-telegram](https://github.com/appleboy/drone-telegram
 * Messages to a forum topic via `message_thread_id`
 * Handlebars message templates with build metadata and extra `template_vars` / `template_vars_file`
 * Message loaded from a file with `message_file`
+* Nothing sent when a marker file exists (`skip_file`)
 * Per-recipient filtering by commit author email (`only_match_email`)
 * Silent messages (`disable_notification`) and no link preview (`disable_web_page_preview`)
 * SOCKS5 proxy
@@ -70,6 +71,31 @@ failed. Some things to know:
   the example only runs on `push`.
 * `commit.author` is the forge username, and `build.finished` is not
   available.
+* A step that ends early, such as a deploy with nothing to do, still counts
+  as a success. To keep the notification quiet then, have that step create a
+  marker file and point `skip_file` at it:
+
+  ```yaml
+  - name: deploy
+    image: alpine
+    commands:
+      - if ./up-to-date.sh; then touch .skip-deploy; exit 0; fi
+      - ./deploy.sh
+    when:
+      - event: push
+
+  - name: telegram
+    image: ghcr.io/alkk/woodpecker-telegram
+    settings:
+      token:
+        from_secret: telegram_token
+      to:
+        from_secret: telegram_to
+      skip_file: .skip-deploy
+    when:
+      - event: push
+        status: success
+  ```
 
 ### Drone
 

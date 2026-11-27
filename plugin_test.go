@@ -4,6 +4,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"syscall"
 	"testing"
 	"time"
 
@@ -458,6 +459,28 @@ func TestRenderMessagesErrors(t *testing.T) {
 	require.Error(t, err)
 	require.ErrorContains(t, err, "error loading message file")
 	require.ErrorIs(t, err, os.ErrNotExist)
+
+	p.Config.SkipFile = filepath.Join(t.TempDir(), "absent")
+	err = p.Exec()
+	require.ErrorContains(t, err, "error loading message file")
+}
+
+func TestExecSkipFile(t *testing.T) {
+	dir := t.TempDir()
+	p := Plugin{Config: Config{
+		Token:       "unused",
+		To:          []string{"1"},
+		MessageFile: filepath.Join(dir, "missing.txt"),
+	}}
+
+	p.Config.SkipFile = filepath.Join(dir, "marker")
+	require.NoError(t, os.WriteFile(p.Config.SkipFile, nil, 0o600))
+	require.NoError(t, p.Exec())
+
+	p.Config.SkipFile = "bad\x00name"
+	err := p.Exec()
+	require.ErrorContains(t, err, "unable to check skip file")
+	require.ErrorIs(t, err, syscall.EINVAL)
 }
 
 func TestParseTo(t *testing.T) {

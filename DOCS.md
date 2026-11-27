@@ -284,6 +284,9 @@ message
 message_file
 : overwrite the default message template with the contents of the specified file
 
+skip_file
+: send nothing and exit successfully when this file exists, for example a marker that an earlier step leaves when it skips a deploy. The check runs before Telegram is contacted. An error checking the file, other than the file not existing, fails the step
+
 template_vars
 : define additional template vars. Example: `var1: hello` can be used within the template as `tpl.var1`
 
