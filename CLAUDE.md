@@ -23,7 +23,7 @@ make fmt-check    # what CI runs; must pass
 go test -run TestEscapeMarkdownContexts -v .   # single test
 ```
 
-Dev tools (golangci-lint etc.) are pinned in `go.tools.mod` and run with `go tool -modfile=go.tools.mod <tool>`, not installed globally. CI also runs hadolint on `docker/Dockerfile`.
+Dependencies are vendored: after changing `go.mod`, run `go mod tidy && go mod vendor` and commit `vendor/`. Dev tools (golangci-lint) are pinned in `go.tools.mod`, a separate module that `vendor/` does not cover, so the Makefile runs them with `go run -modfile=go.tools.mod -mod=mod <pkg>`; `go tool` fails here because it ignores `-mod`. Never run `go mod tidy -modfile=go.tools.mod`, it pulls the app's dependencies into the tools module. CI also runs hadolint on `docker/Dockerfile`.
 
 ## Tests
 

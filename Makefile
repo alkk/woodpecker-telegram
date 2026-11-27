@@ -3,6 +3,8 @@ DIST := dist
 DIST_DIRS := $(DIST)/binaries $(DIST)/release
 GO ?= go
 TOOLS_MOD := -modfile=go.tools.mod
+# go tool ignores -mod, and vendor/ only matches go.mod, so run the linter via go run.
+GOLANGCI_LINT := $(GO) run $(TOOLS_MOD) -mod=mod github.com/golangci/golangci-lint/v2/cmd/golangci-lint
 SHASUM ?= shasum -a 256
 GOFILES := $(shell find . -name "*.go" -type f)
 HAS_GO = $(shell hash $(GO) > /dev/null 2>&1 && echo "GO" || echo "NOGO" )
@@ -51,14 +53,14 @@ LDFLAGS ?= -X 'main.Version=$(VERSION)'
 all: build
 
 fmt:
-	$(GO) tool $(TOOLS_MOD) golangci-lint fmt
+	$(GOLANGCI_LINT) fmt
 
 vet:
 	$(GO) vet ./...
 
 .PHONY: fmt-check
 fmt-check:
-	$(GO) tool $(TOOLS_MOD) golangci-lint fmt --diff --diff-colored=false
+	$(GOLANGCI_LINT) fmt --diff --diff-colored=false
 
 test:
 	@$(GO) test -v -cover -coverprofile coverage.txt ./... && echo "\n==>\033[32m Ok\033[m\n" || exit 1
@@ -154,7 +156,7 @@ version:
 	@echo $(VERSION)
 
 lint:
-	$(GO) tool $(TOOLS_MOD) golangci-lint run
+	$(GOLANGCI_LINT) run
 
 install-tools:
 	$(GO) mod download $(TOOLS_MOD)
