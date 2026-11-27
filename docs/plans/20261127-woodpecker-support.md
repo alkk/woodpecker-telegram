@@ -36,6 +36,14 @@ Also:
 
 Ruled out: Forgejo Actions support, Woodpecker-only mode (dropping `DRONE_*`), and Woodpecker plugin-index metadata.
 
+## Tandem
+
+| Task | Writer | Reviewer |
+|---|---|---|
+| 1 | claude | codex |
+| 2 | claude | codex |
+| 3 | claude | codex |
+
 ## Implementation Steps
 
 ### Task 1: Rename to woodpecker-telegram
