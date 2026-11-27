@@ -8,13 +8,13 @@ LABEL maintainer="Alex Kirhenshtein" \
   org.label-schema.vendor="Alex Kirhenshtein" \
   org.label-schema.schema-version="1.0"
 
-LABEL org.opencontainers.image.source=https://github.com/alkk/drone-telegram
+LABEL org.opencontainers.image.source=https://github.com/alkk/forgejo-telegram
 LABEL org.opencontainers.image.description="plugin for sending telegram notifications"
 LABEL org.opencontainers.image.licenses=MIT
 
 RUN apk add --no-cache ca-certificates && \
   rm -rf /var/cache/apk/*
 
-COPY release/${TARGETOS}/${TARGETARCH}/drone-telegram /bin/
+COPY release/${TARGETOS}/${TARGETARCH}/forgejo-telegram /bin/
 
-ENTRYPOINT ["/bin/drone-telegram"]
+ENTRYPOINT ["/bin/forgejo-telegram"]

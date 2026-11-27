@@ -1,4 +1,4 @@
-EXECUTABLE := drone-telegram
+EXECUTABLE := forgejo-telegram
 DIST := dist
 DIST_DIRS := $(DIST)/binaries $(DIST)/release
 GO ?= go

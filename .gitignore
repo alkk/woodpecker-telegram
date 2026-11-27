@@ -22,7 +22,7 @@ _testmain.go
 *.exe
 *.test
 *.prof
-drone-telegram
+forgejo-telegram
 coverage.txt
 .env
 release

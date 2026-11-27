@@ -1,4 +1,4 @@
-module github.com/alkk/drone-telegram
+module github.com/alkk/forgejo-telegram
 
 go 1.27.4
 

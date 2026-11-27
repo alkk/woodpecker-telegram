@@ -600,12 +600,12 @@ func (p *Plugin) Message() []string {
 		)}
 	}
 
-	// ✅  Build #106 of drone-telegram succeeded.
+	// ✅  Build #106 of forgejo-telegram succeeded.
 	//
 	// 📝 Commit by alkk on master:
 	//  chore: update default template
 	//
-	// 🌐 https://cloud.drone.io/alkk/drone-telegram/106
+	// 🌐 https://cloud.drone.io/alkk/forgejo-telegram/106
 	return []string{
 		fmt.Sprintf("%s Build #%d of `%s` %s.\n\n📝 Commit by %s on `%s`:\n``` %s ```\n\n🌐 %s",
 			icon,
