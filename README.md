@@ -1,104 +1,78 @@
-# drone-telegram
+# forgejo-telegram
 
 ![logo](./images/logo.png)
 
-[Drone](https://github.com/harness/drone) plugin for sending telegram notifications. For the usage
-information and a listing of the available options please take a look at [DOCS.md](DOCS.md).
+[![GitHub release](https://img.shields.io/github/v/release/alkk/forgejo-telegram)](https://github.com/alkk/forgejo-telegram/releases)
+
+Send Telegram notifications from CI pipelines. Runs as a container step in
+[Forgejo Actions](https://forgejo.org/docs/latest/user/actions/), as a
+[Drone](https://github.com/harness/drone) plugin, or as a standalone binary.
 
 Forked from [appleboy/drone-telegram](https://github.com/appleboy/drone-telegram).
 
 ## Features
 
-* Send text message in `markdown` or `html` format
-* Send photo, document, audio, voice, video and sticker messages
-* Send location and venue messages
-* Send message to a forum topic via `message_thread_id`
-* Customize the message with a [template](DOCS.md) and `template_vars` / `template_vars_file`
-* Load the message from a file with `message_file`
-* Filter notifications by commit author email with `only_match_email`
-* Disable notification sound (`disable_notification`) or link preview (`disable_web_page_preview`)
-* Connect through a SOCKS5 proxy
-* Load all settings from an env file with `env_file`
+* Text messages in Telegram `Markdown` or `HTML` format
+* Photo, document, audio, voice, video and sticker messages
+* Location and venue messages
+* Messages to a forum topic via `message_thread_id`
+* Handlebars message templates with build metadata and extra `template_vars` / `template_vars_file`
+* Message loaded from a file with `message_file`
+* Per-recipient filtering by commit author email (`only_match_email`)
+* Silent messages (`disable_notification`) and no link preview (`disable_web_page_preview`)
+* SOCKS5 proxy
+* All settings loaded from an env file (`PLUGIN_ENV_FILE`)
 
-## Markdown messages
+## Configuration
 
-With `format: Markdown` (the default), underscores in ordinary text are escaped
-automatically: `user_name` is sent as `user\_name`. Underscores inside complete
-inline code, triple-backtick code blocks, Markdown links (both the label and
-destination), and bare HTTP(S) URLs are preserved. For example:
+Every setting is an environment variable, usually `PLUGIN_<NAME>` or
+`TELEGRAM_<NAME>`: `PLUGIN_TOKEN`, `PLUGIN_TO`, `PLUGIN_MESSAGE` and so on.
+Drone turns `settings:` into `PLUGIN_*` variables for you; elsewhere, set them
+directly.
 
-```yaml
-format: Markdown
-message: |
-  Built release_name
-  Directory: `_site`
-  [_site](https://example.com/_site)
-```
+`token` is the bot token from [@BotFather](https://t.me/BotFather). `to` is a
+comma-separated list of chat ids. An entry written as `chat_id:email` only
+receives the message when `email` matches the commit author.
 
-Escaping happens **after template rendering**, so the same variable can appear in
-ordinary text and inside code or links. Template fields are no longer modified
-before rendering. This also applies to custom `tpl` values: their underscores in
-ordinary text are now escaped, including values such as `_italic_`. Template
-helpers receive the original field values.
-
-Existing `\_` sequences are preserved, including inside code and links. In those
-contexts, supply `_` directly if you do not want a literal backslash. Unclosed
-code or link syntax falls back to ordinary-text underscore handling; the plugin
-does not validate or repair all Markdown syntax. This behavior targets Telegram's
-legacy `Markdown` format, not MarkdownV2, and does not change the existing
-underscore-based italic behavior in ordinary text.
-
-As an alternative, use `format: HTML` and rewrite the formatting as HTML:
-
-```yaml
-format: HTML
-message: |
-  <code>_site</code>
-  <a href="https://example.com/_site">_site</a>
-```
-
-## Build or Download a binary
-
-The pre-compiled binaries can be downloaded from [release page](https://github.com/alkk/drone-telegram/releases). Support the following OS type.
-
-* Linux amd64/arm/arm64
-* Darwin amd64/arm64
-* Windows amd64
-* FreeBSD amd64
-
-With `Go` installed
-
-```sh
-go install github.com/alkk/drone-telegram@latest
-```
-
-or build the binary from a clone of this repository:
-
-```sh
-export GOOS=linux
-export GOARCH=amd64
-export CGO_ENABLED=0
-
-go build -v -a -tags netgo -o release/linux/amd64/drone-telegram .
-```
-
-## Testing
-
-Test the package with the following command:
-
-```sh
-make test
-```
+Build metadata for the default message and templates (`build.status`,
+`commit.author`, ...) comes from `DRONE_*` variables. See [DOCS.md](DOCS.md) for
+every setting, template variable and helper.
 
 ## Usage
 
-### Drone pipeline
+### Forgejo Actions
 
-Add the plugin as a step in your `.drone.yml`:
+Forgejo doesn't set `DRONE_*` variables, so map the build metadata from
+workflow contexts. Use `env:`, not `with:`, to pass settings to a `docker://`
+step.
+
+```yaml
+- name: Telegram notification
+  if: always()
+  uses: docker://ghcr.io/alkk/forgejo-telegram:latest
+  env:
+    PLUGIN_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+    PLUGIN_TO: ${{ secrets.TELEGRAM_TO }}
+    DRONE_BUILD_STATUS: ${{ job.status }}
+    DRONE_BUILD_NUMBER: ${{ github.run_number }}
+    DRONE_BUILD_EVENT: ${{ github.event_name }}
+    DRONE_BUILD_LINK: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_number }}
+    DRONE_COMMIT_BRANCH: ${{ github.ref_name }}
+    DRONE_COMMIT_AUTHOR: ${{ github.event.head_commit.author.name }}
+    DRONE_COMMIT_AUTHOR_EMAIL: ${{ github.event.head_commit.author.email }}
+    DRONE_COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
+    DRONE_COMMIT_LINK: ${{ github.event.compare }}
+```
+
+The repository name and commit SHA come from Forgejo's own `GITHUB_REPOSITORY`
+and `GITHUB_SHA`. `head_commit` exists only in push event payloads; on other
+events the commit fields stay empty.
+
+### Drone
 
 ```yaml
 - name: send telegram notification
-  image: ghcr.io/alkk/drone-telegram
+  image: ghcr.io/alkk/forgejo-telegram
   settings:
     token:
       from_secret: telegram_token
@@ -112,67 +86,90 @@ Add the plugin as a step in your `.drone.yml`:
       {{/success}}
 ```
 
-See [DOCS.md](DOCS.md) for all available settings and template variables.
-
 ### Docker
 
-Send a message with the minimum required settings:
-
 ```sh
 docker run --rm \
   -e PLUGIN_TOKEN=xxxxxxx \
   -e PLUGIN_TO=xxxxxxx \
   -e PLUGIN_MESSAGE=test \
-  ghcr.io/alkk/drone-telegram
+  ghcr.io/alkk/forgejo-telegram
 ```
 
-Full example with all message types and build metadata:
+Media settings take local file paths, so mount the working directory:
 
 ```sh
 docker run --rm \
   -e PLUGIN_TOKEN=xxxxxxx \
   -e PLUGIN_TO=xxxxxxx \
-  -e PLUGIN_MESSAGE=test \
-  -e PLUGIN_MESSAGE_FILE=testmessage.md \
+  -e PLUGIN_MESSAGE="build {{build.number}} of {{repo.name}}: {{build.status}}" \
   -e PLUGIN_PHOTO=tests/github.png \
   -e PLUGIN_DOCUMENT=tests/gophercolor.png \
-  -e PLUGIN_STICKER=tests/github-logo.png \
-  -e PLUGIN_AUDIO=tests/audio.mp3 \
-  -e PLUGIN_VOICE=tests/voice.ogg \
   -e PLUGIN_LOCATION="24.9163213 121.1424972" \
   -e PLUGIN_VENUE="24.9163213 121.1424972 title address" \
-  -e PLUGIN_VIDEO=tests/video.mp4 \
-  -e PLUGIN_DEBUG=true \
-  -e PLUGIN_ONLY_MATCH_EMAIL=false \
-  -e PLUGIN_FORMAT=markdown \
-  -e DRONE_REPO_OWNER=alkk \
-  -e DRONE_REPO_NAME=drone-telegram \
+  -e DRONE_REPO_NAME=forgejo-telegram \
   -e DRONE_COMMIT_SHA=e5e82b5eb3737205c25955dcc3dcacc839b7be52 \
   -e DRONE_COMMIT_BRANCH=master \
-  -e DRONE_COMMIT_LINK=https://github.com/alkk/drone-telegram/compare/master... \
   -e DRONE_COMMIT_AUTHOR=alkk \
-  -e DRONE_COMMIT_AUTHOR_EMAIL=author@example.com \
   -e DRONE_BUILD_NUMBER=1 \
   -e DRONE_BUILD_STATUS=success \
-  -e DRONE_BUILD_LINK=https://github.com/alkk/drone-telegram \
-  -e DRONE_TAG=1.0.0 \
-  -e DRONE_JOB_STARTED=1477550550 \
-  -e DRONE_JOB_FINISHED=1477550750 \
-  -v $(pwd):$(pwd) \
-  -w $(pwd) \
-  ghcr.io/alkk/drone-telegram
+  -v "$(pwd)":"$(pwd)" \
+  -w "$(pwd)" \
+  ghcr.io/alkk/forgejo-telegram
 ```
 
-Load all environments from file.
+To keep everything in one file, pass `-e PLUGIN_ENV_FILE=path/to/file` instead.
 
-```bash
-docker run --rm \
-  -e PLUGIN_ENV_FILE=your_env_file_path \
-  -v $(pwd):$(pwd) \
-  -w $(pwd) \
-  ghcr.io/alkk/drone-telegram
+## Markdown escaping
+
+With `format: Markdown` (the default), underscores in ordinary text are escaped:
+`user_name` is sent as `user\_name` so Telegram doesn't start italics.
+Underscores stay as they are inside complete inline code, triple-backtick
+blocks, Markdown links (label and URL) and bare HTTP(S) URLs:
+
+```yaml
+format: Markdown
+message: |
+  Built release_name
+  Directory: `_site`
+  [_site](https://example.com/_site)
 ```
+
+Escaping runs after template rendering, so a variable can appear both in text
+and inside code or links. Existing `\_` stays as written. Unclosed code or link
+syntax falls back to ordinary-text handling. This targets Telegram's legacy
+`Markdown` mode, not MarkdownV2.
+
+For full control, use `format: HTML`:
+
+```yaml
+format: HTML
+message: |
+  <code>_site</code>
+  <a href="https://example.com/_site">_site</a>
+```
+
+## Install
+
+Prebuilt binaries for Linux, macOS, Windows and FreeBSD are on the
+[releases page](https://github.com/alkk/forgejo-telegram/releases). With Go
+installed:
+
+```sh
+go install github.com/alkk/forgejo-telegram@latest
+```
+
+## Development
+
+```sh
+make build   # bin/forgejo-telegram
+make test
+make lint
+```
+
+Tests that send real messages run only when `TELEGRAM_TOKEN` and `TELEGRAM_TO`
+are set.
 
 ## License
 
-This project is licensed under the [MIT License](LICENSE).
+[MIT](LICENSE)
