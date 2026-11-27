@@ -1,4 +1,4 @@
-module github.com/alkk/forgejo-telegram/tools
+module github.com/alkk/woodpecker-telegram/tools
 
 go 1.27.4
 

@@ -111,7 +111,7 @@ formatters:
       custom-order: true
       sections:
         - standard
-        - prefix(github.com/alkk/forgejo-telegram)
+        - prefix(github.com/alkk/woodpecker-telegram)
         - default
     gofumpt:
       extra:

@@ -1,4 +1,4 @@
-EXECUTABLE := forgejo-telegram
+EXECUTABLE := woodpecker-telegram
 DIST := dist
 DIST_DIRS := $(DIST)/binaries $(DIST)/release
 GO ?= go
