@@ -6,16 +6,16 @@ Drone CI plugin that sends Telegram notifications. Single `main` package: `main.
 
 ## Fork
 
-- This checkout is `alkk/forgejo-telegram` (`origin`), a fork of `appleboy/drone-telegram`. No `upstream` remote is configured; add one (`git remote add upstream git@github.com:appleboy/drone-telegram.git`) to pull upstream changes.
-- Bugs go to GitHub issues on `alkk/forgejo-telegram`. Issue/PR numbers in commit messages before the fork (`#149`, ...) and in `plan.md` refer to upstream repos.
-- The Go module path is `github.com/alkk/forgejo-telegram`; the tools module is `github.com/alkk/forgejo-telegram/tools` (`go.tools.mod`), and the `gci` import prefix in `.golangci.yml` must match the module path. Everything user-facing (README, DOCS.md, Dockerfile labels, image names) is branded `alkk`.
-- The only published image is `ghcr.io/alkk/forgejo-telegram` (`.github/workflows/docker.yml`); there is no Docker Hub image.
+- This checkout is `alkk/woodpecker-telegram` (`origin`), a fork of `appleboy/drone-telegram`. No `upstream` remote is configured; add one (`git remote add upstream git@github.com:appleboy/drone-telegram.git`) to pull upstream changes.
+- Bugs go to GitHub issues on `alkk/woodpecker-telegram`. Issue/PR numbers in commit messages before the fork (`#149`, ...) and in `plan.md` refer to upstream repos.
+- The Go module path is `github.com/alkk/woodpecker-telegram`; the tools module is `github.com/alkk/woodpecker-telegram/tools` (`go.tools.mod`), and the `gci` import prefix in `.golangci.yml` must match the module path. Everything user-facing (README, DOCS.md, Dockerfile labels, image names) is branded `alkk`.
+- The only published image is `ghcr.io/alkk/woodpecker-telegram` (`.github/workflows/docker.yml`); there is no Docker Hub image.
 - `LICENSE` keeps the upstream MIT copyright, as the license requires.
 
 ## Commands
 
 ```sh
-make build        # bin/forgejo-telegram
+make build        # bin/woodpecker-telegram
 make test         # go test -v -cover ./... (writes coverage.txt)
 make lint         # golangci-lint via go.tools.mod
 make fmt          # golangci-lint fmt (gci, gofumpt, golines)
@@ -45,5 +45,5 @@ Dependencies are vendored: after changing `go.mod`, run `go mod tidy && go mod v
 
 - `DOCS.md` is the plugin's settings reference; update it when adding or changing settings. The plugins.drone.io Telegram listing is upstream's, not this fork's.
 - `plan.md` is the (Chinese-language) working plan for the Markdown underscore escaping fix (appleboy/telegram-action#30).
-- Releases: goreleaser (`.goreleaser.yaml`) builds the binaries from the committed `vendor/` (no tidy hook, so a release doesn't depend on the module proxy); `docker/Dockerfile` copies a prebuilt `release/<os>/<arch>/forgejo-telegram`.
+- Releases: goreleaser (`.goreleaser.yaml`) builds the binaries from the committed `vendor/` (no tidy hook, so a release doesn't depend on the module proxy); `docker/Dockerfile` copies a prebuilt `release/<os>/<arch>/woodpecker-telegram`.
 - Dependabot keeps `go.mod` and `vendor/` in sync (it runs `go mod vendor` itself) but does not see `go.tools.mod`; bump golangci-lint by hand.

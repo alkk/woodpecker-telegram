@@ -1,8 +1,8 @@
-# forgejo-telegram
+# woodpecker-telegram
 
 ![logo](./images/logo.png)
 
-[![GitHub release](https://img.shields.io/github/v/release/alkk/forgejo-telegram)](https://github.com/alkk/forgejo-telegram/releases)
+[![GitHub release](https://img.shields.io/github/v/release/alkk/woodpecker-telegram)](https://github.com/alkk/woodpecker-telegram/releases)
 
 Send Telegram notifications from CI pipelines. Runs as a container step in
 [Forgejo Actions](https://forgejo.org/docs/latest/user/actions/), as a
@@ -49,7 +49,7 @@ step.
 ```yaml
 - name: Telegram notification
   if: always()
-  uses: docker://ghcr.io/alkk/forgejo-telegram:latest
+  uses: docker://ghcr.io/alkk/woodpecker-telegram:latest
   env:
     PLUGIN_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
     PLUGIN_TO: ${{ secrets.TELEGRAM_TO }}
@@ -72,7 +72,7 @@ events the commit fields stay empty.
 
 ```yaml
 - name: send telegram notification
-  image: ghcr.io/alkk/forgejo-telegram
+  image: ghcr.io/alkk/woodpecker-telegram
   settings:
     token:
       from_secret: telegram_token
@@ -93,7 +93,7 @@ docker run --rm \
   -e PLUGIN_TOKEN=xxxxxxx \
   -e PLUGIN_TO=xxxxxxx \
   -e PLUGIN_MESSAGE=test \
-  ghcr.io/alkk/forgejo-telegram
+  ghcr.io/alkk/woodpecker-telegram
 ```
 
 Media settings take local file paths, so mount the working directory:
@@ -107,7 +107,7 @@ docker run --rm \
   -e PLUGIN_DOCUMENT=tests/gophercolor.png \
   -e PLUGIN_LOCATION="24.9163213 121.1424972" \
   -e PLUGIN_VENUE="24.9163213 121.1424972 title address" \
-  -e DRONE_REPO_NAME=forgejo-telegram \
+  -e DRONE_REPO_NAME=woodpecker-telegram \
   -e DRONE_COMMIT_SHA=e5e82b5eb3737205c25955dcc3dcacc839b7be52 \
   -e DRONE_COMMIT_BRANCH=master \
   -e DRONE_COMMIT_AUTHOR=alkk \
@@ -115,7 +115,7 @@ docker run --rm \
   -e DRONE_BUILD_STATUS=success \
   -v "$(pwd)":"$(pwd)" \
   -w "$(pwd)" \
-  ghcr.io/alkk/forgejo-telegram
+  ghcr.io/alkk/woodpecker-telegram
 ```
 
 To keep everything in one file, pass `-e PLUGIN_ENV_FILE=path/to/file` instead.
@@ -152,17 +152,17 @@ message: |
 ## Install
 
 Prebuilt binaries for Linux, macOS, Windows and FreeBSD are on the
-[releases page](https://github.com/alkk/forgejo-telegram/releases). With Go
+[releases page](https://github.com/alkk/woodpecker-telegram/releases). With Go
 installed:
 
 ```sh
-go install github.com/alkk/forgejo-telegram@latest
+go install github.com/alkk/woodpecker-telegram@latest
 ```
 
 ## Development
 
 ```sh
-make build   # bin/forgejo-telegram
+make build   # bin/woodpecker-telegram
 make test
 make lint
 ```

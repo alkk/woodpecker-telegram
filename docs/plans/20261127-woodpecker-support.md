@@ -50,13 +50,13 @@ Ruled out: Forgejo Actions support, Woodpecker-only mode (dropping `DRONE_*`), a
 
 Touches: module path, tools module, lint config, build (Makefile, Dockerfile, .gitignore), docs (README, DOCS.md, CLAUDE.md), the `plugin.go` comment example, and the git remote. This is the same mechanical rename as the forgejo one in commit 636f543. Replace `forgejo-telegram` with `woodpecker-telegram` in the renamed files. Leave `appleboy/drone-telegram` references, historical plan text, `plan.md` and test data alone.
 
-- [ ] every `forgejo-telegram` reference in the renamed files is now `woodpecker-telegram`, including the Dockerfile `COPY`/`ENTRYPOINT` and OCI source label
-- [ ] `origin` points at `git@github.com:alkk/woodpecker-telegram.git`
-- [ ] fresh `make build_linux_amd64` and `make build_linux_arm64` each produce `release/linux/<arch>/woodpecker-telegram`, the path the Dockerfile copies
-- [ ] after the remote change, `goreleaser build --snapshot --single-target --clean` names the binary `woodpecker-telegram-…`; its existing warnings are expected
-- [ ] if a container engine is available, a local image build and a run of `--help` succeed
-- [ ] `go vet ./...`, `go test ./...`, `make lint`, `make fmt-check`, `go mod verify` pass
-- [ ] committed as `chore!: rename to woodpecker-telegram` with `Tandem-Task: 1`
+- [x] every `forgejo-telegram` reference in the renamed files is now `woodpecker-telegram`, including the Dockerfile `COPY`/`ENTRYPOINT` and OCI source label
+- [x] `origin` points at `git@github.com:alkk/woodpecker-telegram.git`
+- [x] fresh `make build_linux_amd64` and `make build_linux_arm64` each produce `release/linux/<arch>/woodpecker-telegram`, the path the Dockerfile copies
+- [x] after the remote change, `goreleaser build --snapshot --single-target --clean` names the binary `woodpecker-telegram-…`; its existing warnings are expected
+- [x] if a container engine is available, a local image build and a run of `--help` succeed
+- [x] `go vet ./...`, `go test ./...`, `make lint`, `make fmt-check`, `go mod verify` pass
+- [x] committed as `chore!: rename to woodpecker-telegram` with `Tandem-Task: 1`
 
 ### Task 2: Woodpecker status, start time and deploy target
 

@@ -1,24 +1,24 @@
 ---
 date: 2019-10-19T00:00:00+00:00
 author: alkk
-containerImage: ghcr.io/alkk/forgejo-telegram
-containerImageUrl: https://github.com/alkk/forgejo-telegram/pkgs/container/forgejo-telegram
+containerImage: ghcr.io/alkk/woodpecker-telegram
+containerImageUrl: https://github.com/alkk/woodpecker-telegram/pkgs/container/woodpecker-telegram
 description: Plugin for sending Telegram notifications
-icon: https://raw.githubusercontent.com/alkk/forgejo-telegram/refs/heads/master/images/logo.svg
-image: ghcr.io/alkk/forgejo-telegram
+icon: https://raw.githubusercontent.com/alkk/woodpecker-telegram/refs/heads/master/images/logo.svg
+image: ghcr.io/alkk/woodpecker-telegram
 logo: telegram.svg
 name: Telegram
-repo: alkk/forgejo-telegram
+repo: alkk/woodpecker-telegram
 tags: [ notifications, chat ]
 title: Telegram
-url: https://github.com/alkk/forgejo-telegram
+url: https://github.com/alkk/woodpecker-telegram
 ---
 
 The Telegram plugin posts build status messages to your account. The below pipeline configuration demonstrates simple usage:
 
 ```yaml
 - name: send telegram notification
-  image: ghcr.io/alkk/forgejo-telegram
+  image: ghcr.io/alkk/woodpecker-telegram
   settings:
     token: xxxxxxxxxx
     to: telegram_user_id
@@ -28,7 +28,7 @@ Example configuration with photo message:
 
 ```diff
   - name: send telegram notification
-    image: ghcr.io/alkk/forgejo-telegram
+    image: ghcr.io/alkk/woodpecker-telegram
     settings:
       token: xxxxxxxxxx
       to: telegram_user_id
@@ -41,7 +41,7 @@ Example configuration with document message:
 
 ```diff
   - name: send telegram notification
-    image: ghcr.io/alkk/forgejo-telegram
+    image: ghcr.io/alkk/woodpecker-telegram
     settings:
       token: xxxxxxxxxx
       to: telegram_user_id
@@ -54,7 +54,7 @@ Example configuration with sticker message:
 
 ```diff
   - name: send telegram notification
-    image: ghcr.io/alkk/forgejo-telegram
+    image: ghcr.io/alkk/woodpecker-telegram
     settings:
       token: xxxxxxxxxx
       to: telegram_user_id
@@ -67,7 +67,7 @@ Example configuration with audio message:
 
 ```diff
   - name: send telegram notification
-    image: ghcr.io/alkk/forgejo-telegram
+    image: ghcr.io/alkk/woodpecker-telegram
     settings:
       token: xxxxxxxxxx
       to: telegram_user_id
@@ -80,7 +80,7 @@ Example configuration with voice message:
 
 ```diff
   - name: send telegram notification
-    image: ghcr.io/alkk/forgejo-telegram
+    image: ghcr.io/alkk/woodpecker-telegram
     settings:
       token: xxxxxxxxxx
       to: telegram_user_id
@@ -93,7 +93,7 @@ Example configuration with location message:
 
 ```diff
   - name: send telegram notification
-    image: ghcr.io/alkk/forgejo-telegram
+    image: ghcr.io/alkk/woodpecker-telegram
     settings:
       token: xxxxxxxxxx
       to: telegram_user_id
@@ -106,7 +106,7 @@ Example configuration with venue message:
 
 ```diff
   - name: send telegram notification
-    image: ghcr.io/alkk/forgejo-telegram
+    image: ghcr.io/alkk/woodpecker-telegram
     settings:
       token: xxxxxxxxxx
       to: telegram_user_id
@@ -119,7 +119,7 @@ Example configuration with video message:
 
 ```diff
   - name: send telegram notification
-    image: ghcr.io/alkk/forgejo-telegram
+    image: ghcr.io/alkk/woodpecker-telegram
     settings:
       token: xxxxxxxxxx
       to: telegram_user_id
@@ -132,7 +132,7 @@ Example configuration with message format (`Markdown` or `HTML`), default as `Ma
 
 ```diff
   - name: send telegram notification
-    image: ghcr.io/alkk/forgejo-telegram
+    image: ghcr.io/alkk/woodpecker-telegram
     settings:
       token: xxxxxxxxxx
       to: telegram_user_id
@@ -143,7 +143,7 @@ Example configuration with a custom message template:
 
 ```diff
   - name: send telegram notification
-    image: ghcr.io/alkk/forgejo-telegram
+    image: ghcr.io/alkk/woodpecker-telegram
     settings:
       token: xxxxxxxxxx
       to: telegram_user_id
@@ -159,7 +159,7 @@ Example configuration with a custom message template loaded from file:
 
 ```diff
   - name: send telegram notification
-    image: ghcr.io/alkk/forgejo-telegram
+    image: ghcr.io/alkk/woodpecker-telegram
     settings:
       token: xxxxxxxxxx
       to: telegram_user_id
@@ -170,7 +170,7 @@ Example configuration with a generic message template loaded from file, with add
 
 ```diff
   - name: send telegram notification
-    image: ghcr.io/alkk/forgejo-telegram
+    image: ghcr.io/alkk/woodpecker-telegram
     settings:
       token: xxxxxxxxxx
       to: telegram_user_id
@@ -196,7 +196,7 @@ Example configuration with a custom message template, with extra vars loaded fro
 
 ```diff
   - name: send telegram notification
-    image: ghcr.io/alkk/forgejo-telegram
+    image: ghcr.io/alkk/woodpecker-telegram
     settings:
       token: xxxxxxxxxx
       to: telegram_user_id
@@ -223,7 +223,7 @@ Example configuration with a custom socks5 URL:
 
 ```diff
   - name: send telegram notification
-    image: ghcr.io/alkk/forgejo-telegram
+    image: ghcr.io/alkk/woodpecker-telegram
     settings:
       token: xxxxxxxxxx
       to: telegram_user_id
@@ -235,7 +235,7 @@ Disables link previews for links in this message
 
 ```diff
   - name: send telegram notification
-    image: ghcr.io/alkk/forgejo-telegram
+    image: ghcr.io/alkk/woodpecker-telegram
     settings:
       token: xxxxxxxxxx
       to: telegram_user_id
@@ -247,7 +247,7 @@ Disables notifications for this message
 
 ```diff
   - name: send telegram notification
-    image: ghcr.io/alkk/forgejo-telegram
+    image: ghcr.io/alkk/woodpecker-telegram
     settings:
       token: xxxxxxxxxx
       to: telegram_user_id
@@ -259,7 +259,7 @@ Send the message to a specific topic (message thread) of a forum supergroup
 
 ```diff
   - name: send telegram notification
-    image: ghcr.io/alkk/forgejo-telegram
+    image: ghcr.io/alkk/woodpecker-telegram
     settings:
       token: xxxxxxxxxx
       to: telegram_group_id

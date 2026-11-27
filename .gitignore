@@ -22,7 +22,7 @@ _testmain.go
 *.exe
 *.test
 *.prof
-forgejo-telegram
+woodpecker-telegram
 coverage.txt
 .env
 release
