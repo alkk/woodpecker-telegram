@@ -4,6 +4,9 @@ on:
   push:
   pull_request:
 
+permissions:
+  contents: read
+
 jobs:
   lint:
     runs-on: ubuntu-latest
@@ -32,38 +35,16 @@ jobs:
           dockerfile: docker/Dockerfile
 
   test:
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
-        go: ["1.26", "1.27"]
-        include:
-          - os: ubuntu-latest
-            go-build: ~/.cache/go-build
-    name: ${{ matrix.os }} @ Go ${{ matrix.go }}
-    runs-on: ${{ matrix.os }}
-    env:
-      GO111MODULE: on
-      GOPROXY: https://proxy.golang.org
+    runs-on: ubuntu-latest
     steps:
-      - name: Set up Go ${{ matrix.go }}
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Setup go
         uses: actions/setup-go@v7
         with:
-          go-version: ${{ matrix.go }}
+          go-version-file: go.mod
           check-latest: true
 
-      - name: Checkout Code
-        uses: actions/checkout@v7
-        with:
-          ref: ${{ github.ref }}
-
-      - uses: actions/cache@v6
-        with:
-          path: |
-            ${{ matrix.go-build }}
-            ~/go/pkg/mod
-          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-          restore-keys: |
-            ${{ runner.os }}-go-
-      - name: Run Tests
-        run: |
-          make test
+      - name: Run tests
+        run: make test
