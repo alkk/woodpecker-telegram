@@ -96,11 +96,11 @@ Touches: CLI flags and env handling (`main.go`), tests (`main_test.go`), and the
 - State that the first set variable wins even if empty, and that Woodpecker's `DRONE_*` aliases exist only for plugin steps.
 - Don't claim a general `DRONE_*` > `GITHUB_*` > `CI_*` order; only these three fields read `CI_*`.
 
-- [ ] the three env lists, the cleanup keys and the `deploy.to` help text are as above; Drone results unchanged
-- [ ] the table test covers the cases above through `newApp()`; `go test ./...` passes
-- [ ] `make lint`, `make fmt-check` pass
-- [ ] README, DOCS.md, CLAUDE.md updated as described
-- [ ] committed with `Tandem-Task: 2`
+- [x] the three env lists, the cleanup keys and the `deploy.to` help text are as above; Drone results unchanged
+- [x] the table test covers the cases above through `newApp()`; `go test ./...` passes
+- [x] `make lint`, `make fmt-check` pass
+- [x] README, DOCS.md, CLAUDE.md updated as described
+- [x] committed with `Tandem-Task: 2`
 
 ⚠️ Both `docs/backlog/` items went in with the plan commit instead of Task 2, so the tree was clean for the tandem run.
 

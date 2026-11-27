@@ -24,14 +24,24 @@ func main() {
 		_ = godotenv.Overload("/run/drone/env")
 	}
 
+	if err := newApp().Run(os.Args); err != nil {
+		log.Fatal(err)
+	}
+}
+
+func newApp() *cli.App {
 	// GitHub Actions exports every declared input as INPUT_* even when the
 	// user leaves it empty, and urfave/cli cannot parse "" for numeric
-	// flags. Treat empty values as unset so the plugin does not fail.
+	// flags. urfave/cli also takes the first alias that is set, so an empty
+	// CI_PIPELINE_STATUS would hide DRONE_BUILD_STATUS. Treat empty values
+	// as unset.
 	unsetEmptyEnv(
 		"PLUGIN_MESSAGE_THREAD_ID", "TELEGRAM_MESSAGE_THREAD_ID", "INPUT_MESSAGE_THREAD_ID",
 		"DRONE_BUILD_NUMBER",
 		"DRONE_STAGE_STARTED",
 		"DRONE_BUILD_FINISHED",
+		"CI_PIPELINE_STATUS",
+		"CI_PIPELINE_STARTED",
 	)
 
 	app := cli.NewApp()
@@ -209,10 +219,12 @@ func main() {
 			EnvVar: "DRONE_BUILD_NUMBER",
 		},
 		cli.StringFlag{
-			Name:   "build.status",
-			Usage:  "build status",
-			Value:  "success",
-			EnvVar: "DRONE_BUILD_STATUS",
+			Name:  "build.status",
+			Usage: "build status",
+			Value: "success",
+			// Woodpecker sets DRONE_BUILD_STATUS=success for every plugin step,
+			// so its real CI_PIPELINE_STATUS must win. Drone never sets it.
+			EnvVar: "CI_PIPELINE_STATUS,DRONE_BUILD_STATUS",
 		},
 		cli.StringFlag{
 			Name:   "build.link",
@@ -232,7 +244,7 @@ func main() {
 		cli.Int64Flag{
 			Name:   "build.started",
 			Usage:  "build started",
-			EnvVar: "DRONE_STAGE_STARTED",
+			EnvVar: "DRONE_STAGE_STARTED,CI_PIPELINE_STARTED",
 		},
 		cli.Int64Flag{
 			Name:   "build.finished",
@@ -271,8 +283,8 @@ func main() {
 		},
 		cli.StringFlag{
 			Name:   "deploy.to",
-			Usage:  "Provides the target deployment environment for the running build. This value is only available to promotion and rollback pipelines.",
-			EnvVar: "DRONE_DEPLOY_TO",
+			Usage:  "Target deployment environment of the running build (Drone promotion/rollback, Woodpecker deployment events).",
+			EnvVar: "DRONE_DEPLOY_TO,CI_PIPELINE_DEPLOY_TARGET",
 		},
 		cli.StringFlag{
 			Name:   "socks5",
@@ -281,14 +293,12 @@ func main() {
 		},
 	}
 
-	if err := app.Run(os.Args); err != nil {
-		log.Fatal(err)
-	}
+	return app
 }
 
 // unsetEmptyEnv removes environment variables whose value is empty or
-// whitespace so numeric flags fall back to their defaults instead of
-// failing to parse.
+// whitespace, so numeric flags fall back to their defaults instead of
+// failing to parse, and an empty alias cannot hide the next one.
 func unsetEmptyEnv(keys ...string) {
 	for _, key := range keys {
 		if val, ok := os.LookupEnv(key); ok && strings.TrimSpace(val) == "" {

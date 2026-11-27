@@ -14,7 +14,7 @@ title: Telegram
 url: https://github.com/alkk/woodpecker-telegram
 ---
 
-The Telegram plugin posts build status messages to your account. The below pipeline configuration demonstrates simple usage:
+The Telegram plugin posts build status messages to your account. It runs as a Woodpecker CI or Drone plugin step; the examples below are steps for either. Simple usage:
 
 ```yaml
 - name: send telegram notification
@@ -319,7 +319,7 @@ format
 
 ## Template Reference
 
-repo.owner
+repo.namespace
 : repository owner
 
 repo.name
@@ -356,13 +356,16 @@ build.tag
 : git tag for current commit
 
 build.link
-: link the the build results in drone
+: link to the build results in the CI
 
 build.started
 : unix timestamp for build started
 
 build.finished
-: unix timestamp for build finished
+: unix timestamp for build finished (Drone only; 0 on Woodpecker)
+
+build.deployTo
+: target deployment environment (Drone promotion/rollback, Woodpecker deployment events)
 
 ## Template Function Reference
 

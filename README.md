@@ -4,9 +4,9 @@
 
 [![GitHub release](https://img.shields.io/github/v/release/alkk/woodpecker-telegram)](https://github.com/alkk/woodpecker-telegram/releases)
 
-Send Telegram notifications from CI pipelines. Runs as a container step in
-[Forgejo Actions](https://forgejo.org/docs/latest/user/actions/), as a
-[Drone](https://github.com/harness/drone) plugin, or as a standalone binary.
+[Woodpecker CI](https://woodpecker-ci.org) plugin for sending Telegram
+notifications. It also works as a [Drone](https://github.com/harness/drone)
+plugin and as a standalone binary.
 
 Forked from [appleboy/drone-telegram](https://github.com/appleboy/drone-telegram).
 
@@ -27,46 +27,49 @@ Forked from [appleboy/drone-telegram](https://github.com/appleboy/drone-telegram
 
 Every setting is an environment variable, usually `PLUGIN_<NAME>` or
 `TELEGRAM_<NAME>`: `PLUGIN_TOKEN`, `PLUGIN_TO`, `PLUGIN_MESSAGE` and so on.
-Drone turns `settings:` into `PLUGIN_*` variables for you; elsewhere, set them
-directly.
+Woodpecker and Drone turn `settings:` into `PLUGIN_*` variables for you;
+elsewhere, set them directly.
 
 `token` is the bot token from [@BotFather](https://t.me/BotFather). `to` is a
 comma-separated list of chat ids. An entry written as `chat_id:email` only
 receives the message when `email` matches the commit author.
 
 Build metadata for the default message and templates (`build.status`,
-`commit.author`, ...) comes from `DRONE_*` variables. See [DOCS.md](DOCS.md) for
-every setting, template variable and helper.
+`commit.author`, ...) comes from the CI's environment variables. See
+[DOCS.md](DOCS.md) for every setting, template variable and helper.
 
 ## Usage
 
-### Forgejo Actions
-
-Forgejo doesn't set `DRONE_*` variables, so map the build metadata from
-workflow contexts. Use `env:`, not `with:`, to pass settings to a `docker://`
-step.
+### Woodpecker
 
 ```yaml
-- name: Telegram notification
-  if: always()
-  uses: docker://ghcr.io/alkk/woodpecker-telegram:latest
-  env:
-    PLUGIN_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
-    PLUGIN_TO: ${{ secrets.TELEGRAM_TO }}
-    DRONE_BUILD_STATUS: ${{ job.status }}
-    DRONE_BUILD_NUMBER: ${{ github.run_number }}
-    DRONE_BUILD_EVENT: ${{ github.event_name }}
-    DRONE_BUILD_LINK: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_number }}
-    DRONE_COMMIT_BRANCH: ${{ github.ref_name }}
-    DRONE_COMMIT_AUTHOR: ${{ github.event.head_commit.author.name }}
-    DRONE_COMMIT_AUTHOR_EMAIL: ${{ github.event.head_commit.author.email }}
-    DRONE_COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
-    DRONE_COMMIT_LINK: ${{ github.event.compare }}
+steps:
+  - name: telegram
+    image: ghcr.io/alkk/woodpecker-telegram
+    settings:
+      token:
+        from_secret: telegram_token
+      to:
+        from_secret: telegram_to
+    when:
+      - event: push
+        status: [success, failure]
 ```
 
-The repository name and commit SHA come from Forgejo's own `GITHUB_REPOSITORY`
-and `GITHUB_SHA`. `head_commit` exists only in push event payloads; on other
-events the commit fields stay empty.
+Woodpecker fills in the build metadata itself, including whether the workflow
+failed. Some things to know:
+
+* The step must be a plugin step: `settings:` only, no `commands`,
+  `entrypoint` or `environment`. With any of those, Woodpecker leaves out the
+  repository, commit and build details; only the status, start time and
+  deploy target still come through.
+* The status is the state of the current workflow when the step starts. In a
+  serial workflow put the step last; with `depends_on`, list every step whose
+  outcome the message should report.
+* By default Woodpecker doesn't give secrets to `pull_request` pipelines, so
+  the example only runs on `push`.
+* `commit.author` is the forge username, and `build.finished` is not
+  available.
 
 ### Drone
 
