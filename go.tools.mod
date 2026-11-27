@@ -1,4 +1,4 @@
-module github.com/appleboy/drone-telegram/tools
+module github.com/alkk/drone-telegram/tools
 
 go 1.26.10
 

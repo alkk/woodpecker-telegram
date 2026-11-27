@@ -2,16 +2,10 @@
 
 ![logo](./images/logo.png)
 
-[![GoDoc](https://pkg.go.dev/badge/github.com/appleboy/drone-telegram.svg)](https://pkg.go.dev/github.com/appleboy/drone-telegram)
-[![Trivy Security Scan](https://github.com/appleboy/drone-telegram/actions/workflows/trivy.yml/badge.svg?branch=master)](https://github.com/appleboy/drone-telegram/actions/workflows/trivy.yml)
-[![codecov](https://codecov.io/gh/appleboy/drone-telegram/branch/master/graph/badge.svg)](https://codecov.io/gh/appleboy/drone-telegram)
-[![GitHub release](https://img.shields.io/github/v/release/appleboy/drone-telegram)](https://github.com/appleboy/drone-telegram/releases)
-
 [Drone](https://github.com/harness/drone) plugin for sending telegram notifications. For the usage
-information and a listing of the available options please take a look at [DOCS.md](DOCS.md) or
-[the docs](https://plugins.drone.io/plugins/telegram).
+information and a listing of the available options please take a look at [DOCS.md](DOCS.md).
 
-Using GitHub Actions instead? See [appleboy/telegram-action](https://github.com/appleboy/telegram-action).
+Forked from [appleboy/drone-telegram](https://github.com/appleboy/drone-telegram).
 
 ## Features
 
@@ -65,7 +59,7 @@ message: |
 
 ## Build or Download a binary
 
-The pre-compiled binaries can be downloaded from [release page](https://github.com/appleboy/drone-telegram/releases). Support the following OS type.
+The pre-compiled binaries can be downloaded from [release page](https://github.com/alkk/drone-telegram/releases). Support the following OS type.
 
 * Linux amd64/arm/arm64
 * Darwin amd64/arm64
@@ -75,10 +69,10 @@ The pre-compiled binaries can be downloaded from [release page](https://github.c
 With `Go` installed
 
 ```sh
-go install github.com/appleboy/drone-telegram@latest
+go install github.com/alkk/drone-telegram@latest
 ```
 
-or build the binary with the following command:
+or build the binary from a clone of this repository:
 
 ```sh
 export GOOS=linux
@@ -104,7 +98,7 @@ Add the plugin as a step in your `.drone.yml`:
 
 ```yaml
 - name: send telegram notification
-  image: appleboy/drone-telegram
+  image: ghcr.io/alkk/drone-telegram
   settings:
     token:
       from_secret: telegram_token
@@ -129,7 +123,7 @@ docker run --rm \
   -e PLUGIN_TOKEN=xxxxxxx \
   -e PLUGIN_TO=xxxxxxx \
   -e PLUGIN_MESSAGE=test \
-  appleboy/drone-telegram
+  ghcr.io/alkk/drone-telegram
 ```
 
 Full example with all message types and build metadata:
@@ -151,22 +145,22 @@ docker run --rm \
   -e PLUGIN_DEBUG=true \
   -e PLUGIN_ONLY_MATCH_EMAIL=false \
   -e PLUGIN_FORMAT=markdown \
-  -e DRONE_REPO_OWNER=appleboy \
-  -e DRONE_REPO_NAME=go-hello \
+  -e DRONE_REPO_OWNER=alkk \
+  -e DRONE_REPO_NAME=drone-telegram \
   -e DRONE_COMMIT_SHA=e5e82b5eb3737205c25955dcc3dcacc839b7be52 \
   -e DRONE_COMMIT_BRANCH=master \
-  -e DRONE_COMMIT_LINK=https://github.com/appleboy/go-hello/compare/master... \
-  -e DRONE_COMMIT_AUTHOR=appleboy \
-  -e DRONE_COMMIT_AUTHOR_EMAIL=appleboy@gmail.com \
+  -e DRONE_COMMIT_LINK=https://github.com/alkk/drone-telegram/compare/master... \
+  -e DRONE_COMMIT_AUTHOR=alkk \
+  -e DRONE_COMMIT_AUTHOR_EMAIL=author@example.com \
   -e DRONE_BUILD_NUMBER=1 \
   -e DRONE_BUILD_STATUS=success \
-  -e DRONE_BUILD_LINK=http://github.com/appleboy/go-hello \
+  -e DRONE_BUILD_LINK=https://github.com/alkk/drone-telegram \
   -e DRONE_TAG=1.0.0 \
   -e DRONE_JOB_STARTED=1477550550 \
   -e DRONE_JOB_FINISHED=1477550750 \
   -v $(pwd):$(pwd) \
   -w $(pwd) \
-  appleboy/drone-telegram
+  ghcr.io/alkk/drone-telegram
 ```
 
 Load all environments from file.
@@ -176,7 +170,7 @@ docker run --rm \
   -e PLUGIN_ENV_FILE=your_env_file_path \
   -v $(pwd):$(pwd) \
   -w $(pwd) \
-  appleboy/drone-telegram
+  ghcr.io/alkk/drone-telegram
 ```
 
 ## License

@@ -111,7 +111,7 @@ formatters:
       custom-order: true
       sections:
         - standard
-        - prefix(github.com/appleboy/drone-telegram)
+        - prefix(github.com/alkk/drone-telegram)
         - default
     gofumpt:
       extra:

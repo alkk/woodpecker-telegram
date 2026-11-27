@@ -602,10 +602,10 @@ func (p *Plugin) Message() []string {
 
 	// ✅  Build #106 of drone-telegram succeeded.
 	//
-	// 📝 Commit by appleboy on master:
+	// 📝 Commit by alkk on master:
 	//  chore: update default template
 	//
-	// 🌐 https://cloud.drone.io/appleboy/drone-telegram/106
+	// 🌐 https://cloud.drone.io/alkk/drone-telegram/106
 	return []string{
 		fmt.Sprintf("%s Build #%d of `%s` %s.\n\n📝 Commit by %s on `%s`:\n``` %s ```\n\n🌐 %s",
 			icon,
